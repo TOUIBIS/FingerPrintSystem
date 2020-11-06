@@ -1,0 +1,307 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <style>
+            textarea {
+          font-size: .8rem;
+          letter-spacing: 1px;
+      }
+      textarea {
+          padding: 10px;
+          line-height: 1.5;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+          box-shadow: 1px 1px 1px #999;
+      }
+          </style>
+      
+        <!-- Bootstrap core CSS -->
+        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+      
+        <!-- Custom styles for this template -->
+        <link href="css/shop-homepage.css" rel="stylesheet">
+
+        <style media="screen">
+            body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+            #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
+            #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
+            #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
+            #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
+            #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
+            #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
+            #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
+            @media (max-width: 600px) {
+              body, #message { margin-top: 0; background: white; box-shadow: none; }
+              body { border-top: 16px solid #ffa100; }
+            }
+          </style>
+      
+    </head>
+    <body>
+        <br>
+        <br>
+        
+      <!-- Navigation -->
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+            <div class="container">
+            <a class="navbar-brand" href="#">Port de la Chebba</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+           
+            </div>
+        </nav>
+        
+        <!-- Page Content -->
+    <div class="container">
+        <br>
+       <div class="row">
+           <b> Nom Bateau <input id="nomB" type="text" > </b>
+           <b> Num Bateau<input id="numB" type="text" > </b>
+
+            <button id="insert"  class="btn btn-primary">Insérer</button>
+            <button id="select" class="btn btn-secondary">Afficher</button>
+            <button id="update" class="btn btn-success">Modifier</button>
+            <button id="delete" class="btn btn-danger">Supprimer</button>
+        </div>
+
+        
+        <div class="row">
+
+            <div class="col-lg-4">
+    
+              <h1 class="my-4">Nom Bateau</h1>
+              <div class="list-group" id="listedesbateaux">
+                <button id="afficheall" class="btn btn-primary" >Afficher la liste des Bateaux</button> 
+
+                   
+
+              </div>
+
+              <script>
+                    function getListePersonnes(x){
+                        firebase.database().ref('sarha/').on('value',function(snapshot){
+                            listdesPersonnes=snapshot.val();
+                            //console.log(x);
+                            for (const [key, value] of Object.entries(listdesPersonnes)) {
+                                if (value.idb == x){
+                                    document.getElementById("details").value += '\n'+" ********************" +'\n' ;
+                                    for (const [key2, value] of Object.entries(listdesPersonnes[key])) {
+                                        if (key2 == "idb"){
+                                            getNomBateau(x);
+                                        }else{
+                                            console.log(`${key2} ${value}`);
+                                            document.getElementById("details").value += `${key2} ${value}` +'\n';
+                                        }
+                                        
+                                       
+                                    }
+                                }
+                                    
+                                    //console.log(`${key}: ${value}`);
+                                
+                                
+                            }
+                            
+                            
+                        }); 
+                    }
+                    function getNomBateau(x){
+                        firebase.database().ref('Bateaux/').on('value',function(snapshot){
+                            listdunoms=snapshot.val();
+                            document.getElementById("details").value += 'Nom Btaeau : '+listdunoms[x].NomBateau +'\n';
+                            
+                        }); 
+                    }
+                  
+                    function myFunc(x) {
+                        
+                        firebase.database().ref('sarha/').on('value',function(snapshot){
+                                sarhaDetails=snapshot.val();
+                                document.getElementById("details").value = "";
+                                dispo = false;
+                                for (let j = 1 ; j< sarhaDetails.length ; j++ ){
+                                   
+                                    
+                                    if (sarhaDetails[j].idb == x){
+                                        //document.getElementById("details").value += '\n'+" ********************" +'\n' ;
+                                        //document.getElementById("details").value += " Date depart :" +'\n' ;
+                                        //document.getElementById("details").value +=sarhaDetails[j].depart +'\n'  ;
+                                        //document.getElementById("details").value += '\n'+" Nom Bateau :" +'\n' ;
+                                        //getNomBateau(x);
+                                        
+                                       
+                                        dispo = true;
+                                        
+                                    }
+                                   
+                                }
+
+                                if (dispo == false) {
+                                    document.getElementById("details").value = "Pas d'historique maintenant.. ! ";
+                                }else {
+                                    getListePersonnes(x);
+                                }
+
+
+                                
+                                
+                               // console.log(sarhaDetails[x].idb);
+                                //console.log(sarhaDetails[x].idp);   
+                                        //console.log(key , sarhaDetails.idp);
+                                      
+                                           
+                                           // document.getElementById("details").innerHTML=sarhaDetails.key.depart + sarhaDetails.key.idb + sarhaDetails.key.idp ;
+                                       
+                                           // document.getElementById("details").innerHTML="";
+                                        
+                                 
+
+                               
+                                
+                             
+                                
+                                
+                        }); 
+                        
+
+                     
+                    }
+
+                
+                        // Affich Process
+                        var listB; 
+                        document.getElementById('afficheall').onclick = function(){
+                        Ready();
+                        firebase.database().ref('Bateaux/').on('value',function(snapshot){
+
+                                listB=snapshot.val();
+
+                                for (const [key, value] of Object.entries(listB)) {
+                                    //console.log(key, value.NomBateau);
+
+                                    var tag = document.createElement('a');
+                                    var text = document.createTextNode(value.NomBateau);
+                                    tag.setAttribute('id',key);
+                                    //console.log(tag.id);
+                                    tag.setAttribute('href',"javascript:myFunc("+key+");");
+                                    tag.appendChild(text);
+                                    var element = document.getElementById("listedesbateaux");
+                                    element.appendChild(tag);
+                                }
+                                
+                        });   
+                    }
+
+
+
+
+                    
+  
+
+                    
+
+                    
+            </script>
+              
+    
+            </div>
+    
+            <div class="col-lg-4">
+    
+
+            <div class="col-lg-4">
+    
+              <h1 class="my-4">Historique</h1>
+              
+                <textarea id="details" name="details" rows="15" cols="33">
+    
+                </textarea>
+              
+              
+              
+    
+            </div>
+
+            <!-- /.col-lg-3 -->
+    
+            <!-- /.col-lg-9 -->
+    
+          
+
+    </div>
+
+            <!-- Bootstrap core JavaScript -->
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
+
+        <script id="MainScript">
+             // Your web app's Firebase configuration
+                var firebaseConfig = {
+                    apiKey: "AIzaSyC5BXaV2Xmz-AJg08kAMUXJGx82gEl_k6E",
+                    authDomain: "fingerprinter-d905e.firebaseapp.com",
+                    databaseURL: "https://fingerprinter-d905e.firebaseio.com",
+                    projectId: "fingerprinter-d905e",
+                    storageBucket: "fingerprinter-d905e.appspot.com",
+                    messagingSenderId: "699774951890",
+                    appId: "1:699774951890:web:13ea5fdeff00ab2c07a80b"
+                };
+                // Initialize Firebase
+                firebase.initializeApp(firebaseConfig);  
+
+                // Ready Data          
+                var nameB , idB;
+                var listBateaux ;
+
+                function Ready(){
+                    nameB = document.getElementById('nomB').value;
+                    idB = document.getElementById('numB').value;
+                }
+
+                // Insert Process
+                document.getElementById('insert').onclick = function(){
+                    Ready();
+                    firebase.database().ref('Bateaux/'+idB).set({
+                        NomBateau : nameB
+                        
+                    });
+                }
+
+                // Select Process
+                document.getElementById("select").onclick = function(){
+                    Ready();
+                    firebase.database().ref('Bateaux/'+idB).on('value',function(snapshot){
+                        document.getElementById('nomB').value=snapshot.val().NomBateau
+                        
+                    });
+                }
+
+                // Update Process
+                document.getElementById('update').onclick = function(){
+                    Ready();
+                    firebase.database().ref('Bateaux/'+idB).update({
+                        NomBateau : nameB
+                        
+                    });
+                }
+
+                //  Deletion Process
+                document.getElementById('delete').onclick = function(){
+                    Ready();
+                    firebase.database().ref('Bateaux/'+idB).remove();
+                }
+
+               
+                
+
+
+
+        </script>
+    </body>
+</html>
